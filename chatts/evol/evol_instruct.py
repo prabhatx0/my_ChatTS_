@@ -38,10 +38,10 @@ import copy
 # Config
 MODEL_PATH = "[LOCAL_LLM_PATH]"
 ctx_length = 4096
-num_gpus = 4
-gpu_per_model = 2
-batch_size = 16
-ENGINE = 'dryrun'
+num_gpus = 8
+gpu_per_model = 1
+batch_size = 32
+ENGINE = 'vllm'
 MULTIPROCESS = True
 DFS_K = 3
 ENCODING_METHOD = 'sp'
@@ -186,7 +186,6 @@ def llm_batch_generate(seed_prompts: List[EvolPrompt], use_chat_template=True, n
                         validation_queue.put((cur_validation_prompt, cur_seed_prompt))
                         pbar_input.update()
                     except Exception as err:
-                        print("[ERROR PARSE INPUT RESPONSE]", err)
                         parse_failed += 1
                         continue
 
@@ -212,8 +211,8 @@ def llm_batch_generate(seed_prompts: List[EvolPrompt], use_chat_template=True, n
                         validation_failed += 1
                 previous_output_len = current_output_len
 
-                pbar_input.set_description(f'fail={parse_failed}')
-                pbar_validation.set_description(f'fail={validation_failed}')
+                pbar_input.set_description(f'[EVOL]fail={parse_failed}')
+                pbar_validation.set_description(f'[VALID]fail={validation_failed}')
 
         for p in processes:
             p.terminate()

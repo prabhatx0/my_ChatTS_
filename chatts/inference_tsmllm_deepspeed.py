@@ -24,7 +24,7 @@ from encoding_utils import timeseries_encoding
 
 
 # CONFIG
-EXP = 'chattq_dataset_a'
+EXP = 'chatts_dataset_a'
 WORKDIR = '[YOUR_WORK_DIR]'
 MODEL_PATH = f'{WORKDIR}/ckpt'
 DATASET = f'{WORKDIR}/evaluation/dataset/dataset_a.json'

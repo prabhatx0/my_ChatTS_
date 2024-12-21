@@ -26,7 +26,6 @@ from chatts.ts_generator import generate_time_series, generate_controlled_attrib
 from chatts.llm_utils import llm_batch_generate, parse_llm_json
 from chatts.encoding_utils import timeseries_encoding, timeseries_to_list
 from chatts.attribute_utils import metric_to_controlled_attributes
-import traceback
 
 
 # CONFIG
@@ -189,8 +188,6 @@ def generate_dataset():
                     'attribute_pool': result[i]['attribute_pool']
                 })
         except Exception as err:
-            traceback.print_exc()
-            print(err)
             failed_cnt += 1
             continue
     print(f"Parse finished. Failed count: {failed_cnt}, Success count: {len(dataset)}.")

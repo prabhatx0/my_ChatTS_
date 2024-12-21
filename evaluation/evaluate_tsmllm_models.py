@@ -27,7 +27,7 @@ import io
 from evaluation.evaluate_qa import evaluate_batch_qa
 
 # CONFIG
-EXP = 'chattq_dataset_a'
+EXP = 'chatts_dataset_a'
 DATASET = 'evaluation/dataset/dataset_a.json'
 
 
