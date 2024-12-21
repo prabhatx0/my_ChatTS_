@@ -59,6 +59,7 @@ deepspeed --num_gpus [YOUR_NUM_GPUS] --master_port 12345 chatts/inference_tsmllm
 ## Case Studies
 ![image](figures/case_studies.png)
 In `ChatTS`, we mainly focus on **Understanding and Reasoning** about time series, just like what vision/video/audio-MLLMs do, rather than conducting time series prediction, anomaly detection and classification tasks.
+You can try more application scenarios of ChatTS by modifying the time series and the text of questions in `demo.ipynb`! 
 
 ## Notes
 - We are preparing the code for training TS-MLLM models and they will be released soon.
