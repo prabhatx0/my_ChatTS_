@@ -1,7 +1,11 @@
-# ChatTS: Time-Series Multimodal LLM
+# ChatTS: Understanding, Chat, Reasoning about Time Series with TS-MLLM
 Code, datasets and model for `ChatTS`: [ChatTS: Aligning Time Series with LLMs via Synthetic Data for Enhanced Understanding and Reasoning](https://arxiv.org/pdf/2412.03104).
 
 Repo URL: https://github.com/bytedance/ChatTS
+
+Here is an example of a ChatTS application, which allows users to interact with a LLM to understand and reason about time series data:
+![Chat](figures/chat_example.png)
+
 
 ## Introduction
 This repository provides several toolkits for generating synthetic data with the approaches introduced in `ChatTS`, as well as the evaluation code for reproduction:
@@ -52,7 +56,12 @@ deepspeed --num_gpus [YOUR_NUM_GPUS] --master_port 12345 chatts/inference_tsmllm
 - We provide the two evaluation datasets we collected, as mentioned in the paper, located in the `evaluation/dataset` folder. Each dataset sample contains the following fields: `timeseries`, `question`, `answer` (standard answers in text format, for reference only), `attributes` (structured labels used for result evaluation), and `ability_types` (the tasks included in the question). **Please note that, to reduce the evaluation cost, we have merged different questions for the same time series into a single `question`, using numbering to distinguish between the different questions.** Therefore, the actual number of questions in the evaluation dataset may be greater than the number of `timeseries` entries. Additionally, please note that some tasks in inductive reasoning and alignment are grouped into the same question, as the inductive reasoning tasks involve explaining the physical meanings of time series attributes.
 - The `MCQ2` dataset is a third-party open-source dataset, we do not provide it in this repository. Please download it directly via https://github.com/behavioral-data/TSandLanguage.
 
+## Case Studies
+![image](figures/case_studies.png)
+In `ChatTS`, we mainly focus on **Understanding and Reasoning** about time series, just like what vision/video/audio-MLLMs do, rather than conducting time series prediction, anomaly detection and classification tasks.
+
 ## Notes
+- We are preparing the code for training TS-MLLM models and they will be released soon.
 - You can use the CPU for inference. However, since our current ChatTS model does not implement `kv_cache` (which we plan to implement shortly), the inference speed may be significantly slow.
 - The code, data, and models in this repository are for review purposes only. Due to company policy, the open-source code is currently under review. Once the review is approved, we will release it on GitHub and the HuggingFace platform for public access.
 
