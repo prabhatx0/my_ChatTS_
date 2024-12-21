@@ -1,6 +1,8 @@
 # ChatTS: Time-Series Multimodal LLM
 Code, datasets and model for `ChatTS`: [ChatTS: Aligning Time Series with LLMs via Synthetic Data for Enhanced Understanding and Reasoning](https://arxiv.org/pdf/2412.03104).
 
+Repo URL: https://github.com/bytedance/ChatTS
+
 ## Introduction
 This repository provides several toolkits for generating synthetic data with the approaches introduced in `ChatTS`, as well as the evaluation code for reproduction:
 - Toolkits for generating synthetic time series data and the corresponding attribues: `chatts/ts_generator.py`.
