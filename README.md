@@ -1,11 +1,12 @@
 # ChatTS: Understanding, Chat, Reasoning about Time Series with TS-MLLM
-Code, datasets and model for `ChatTS`: [ChatTS: Aligning Time Series with LLMs via Synthetic Data for Enhanced Understanding and Reasoning](https://arxiv.org/pdf/2412.03104).
+`ChatTS` focuses on **Understanding and Reasoning** about time series, much like what vision/video/audio-MLLMs do.
+This repo provides code, datasets and model for `ChatTS`: [ChatTS: Aligning Time Series with LLMs via Synthetic Data for Enhanced Understanding and Reasoning](https://arxiv.org/pdf/2412.03104).
 
 Repo URL: https://github.com/bytedance/ChatTS
 
 Here is an example of a ChatTS application, which allows users to interact with a LLM to understand and reason about time series data:
 ![Chat](figures/chat_example.png)
-
+In contrast, `ChatTS` does **not** focus on conducting time series prediction, anomaly detection and classification tasks. 
 
 ## Introduction
 This repository provides several toolkits for generating synthetic data with the approaches introduced in `ChatTS`, as well as the evaluation code for reproduction:
@@ -53,8 +54,9 @@ deepspeed --num_gpus [YOUR_NUM_GPUS] --master_port 12345 chatts/inference_tsmllm
 - We also provide a simple demo to evaluate the performance of text-based GPT models. After setting your `API_KEY` and `OPENAI_URL` in `evaluation/evaluate_gpt_text_models.py`, run the command `python3 -m evaluation.evaluate_gpt_text_models` to obtain the evaluation results of the text-based GPT model.
 
 ## Evaluation Datasets
-- We provide the two evaluation datasets we collected, as mentioned in the paper, located in the `evaluation/dataset` folder. Each dataset sample contains the following fields: `timeseries`, `question`, `answer` (standard answers in text format, for reference only), `attributes` (structured labels used for result evaluation), and `ability_types` (the tasks included in the question). **Please note that, to reduce the evaluation cost, we have merged different questions for the same time series into a single `question`, using numbering to distinguish between the different questions.** Therefore, the actual number of questions in the evaluation dataset may be greater than the number of `timeseries` entries. Additionally, please note that some tasks in inductive reasoning and alignment are grouped into the same question, as the inductive reasoning tasks involve explaining the physical meanings of time series attributes.
-- The `MCQ2` dataset is a third-party open-source dataset, we do not provide it in this repository. Please download it directly via https://github.com/behavioral-data/TSandLanguage.
+- We've provided the two evaluation datasets we gathered, as stated in the paper. You can find them in the `evaluation/dataset` folder. Each sample in these datasets has several parts: `timeseries`, which is the time series data itself; `question`, the query related to the time series; `answer`, the text-form standard answers provided for your reference only; `attributes`, the structured labels used to evaluate results; and `ability_types`, which indicates the types of tasks the question involves.
+**Please pay special attention to this**: To cut down on evaluation costs, we've combined different questions that pertain to the same time series into one `question`. We use numbering to tell these different questions apart. So, when you look at the evaluation dataset, the actual count of questions might be more than the number of `timeseries` entries. Another thing to note is that some tasks in inductive reasoning and alignment are grouped together in one question. This is because inductive reasoning tasks often require explaining the physical meanings of time series attributes. 
+- The `MCQ2` dataset is sourced from a third-party and is open-source. However, due to licensing restrictions, we are unable to provide it within this repository. You can directly download it via https://github.com/behavioral-data/TSandLanguage.
 
 ## Case Studies
 ![image](figures/case_studies.png)
@@ -82,3 +84,13 @@ Please do **not** create a public GitHub issue for a security vulnerability.
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
+
+## Cite
+```bibtex
+@article{xie2024chatts,
+  title={ChatTS: Aligning Time Series with LLMs via Synthetic Data for Enhanced Understanding and Reasoning},
+  author={Xie, Zhe and Li, Zeyan and He, Xiao and Xu, Longlong and Wen, Xidao and Zhang, Tieying and Chen, Jianjun and Shi, Rui and Pei, Dan},
+  journal={arXiv preprint arXiv:2412.03104},
+  year={2024}
+}
+```
