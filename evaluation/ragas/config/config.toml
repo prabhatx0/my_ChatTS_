@@ -1,0 +1,33 @@
+data_dir = "./evaluation/ragas/data"
+default_quota = 150
+submission_interval = 10
+[judge]
+enabled = true
+max_workers = 8
+correct_threshold = 0.6
+max_retries = 3
+max_execution_time = 60
+report_metric = "score"
+[langsmith]
+enabled = false
+api_key = ""
+project_name = ""
+endpoint = "https://api.smith.langchain.com"
+[models]
+llm_type = "openai"
+llm_model = "gpt-4o-mini"
+openai_api_base = "[YOUR_OPENAI_URL]"
+openai_api_key = "[YOUR_OPENAI_APIKEY]"
+
+dashscope_api_key = "none"
+
+[embedding]
+openai_api_key = "[YOUR_OPENAI_APIKEY]"
+openai_api_base = "[YOUR_OPENAI_URL]"
+
+[cms]
+enabled = false
+interval = 10
+contest_id = ""
+username = ""
+password = ""
