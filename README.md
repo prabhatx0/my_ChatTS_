@@ -6,7 +6,6 @@ Repo URL: https://github.com/bytedance/ChatTS
 
 Here is an example of a ChatTS application, which allows users to interact with a LLM to understand and reason about time series data:
 ![Chat](figures/chat_example.png)
-In contrast, `ChatTS` does **not** focus on conducting time series prediction, anomaly detection and classification tasks. 
 
 ## Introduction
 This repository provides several toolkits for generating synthetic data with the approaches introduced in `ChatTS`, as well as the evaluation code for reproduction:
