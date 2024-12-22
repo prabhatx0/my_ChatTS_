@@ -8,7 +8,7 @@ Here is an example of a ChatTS application, which allows users to interact with 
 ![Chat](figures/chat_example.png)
 
 ## Introduction
-This repository provides several toolkits for generating synthetic data with the approaches introduced in `ChatTS`, as well as the evaluation code for reproduction:
+This repository provides several toolkits for generating synthetic data with the approaches introduced in `ChatTS`, as well as the evaluation code and evaluation datasets for reproduction:
 - Toolkits for generating synthetic time series data and the corresponding attribues: `chatts/ts_generator.py`.
 - Example code for generating a training dataset with pre-defined templates: `chatts/generate_template_qa.py`, which can be further used as seed QAs for TSEvol.
 - Example code for generating a training dataset with LLMs: `chatts/generate_llm_qa`, which can be further used as seed QAs for TSEvol.
@@ -16,10 +16,10 @@ This repository provides several toolkits for generating synthetic data with the
 - Code implementation for evaluation: `evaluation/`.
 - A trained `ChatTS` model and evaluations datasets (Refer to the section below for more details).
 - A simple demo for inference: `demo.ipynb`.
+- Training scripts for training your own model.
 
-
-We also provide the evaluation datasets collected by us. You can download the evaluation datasets from [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14349206.svg)](https://doi.org/10.5281/zenodo.14349206).
-A fine-tuned `ChatTS` model have been open-sourced at [here](https://cloud.tsinghua.edu.cn/d/c23644020adc4d0fbc0a/). You may need to download the files one by one. You can download and try it!
+We also provide the evaluation datasets collected by us. You can download the evaluation datasets from [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14349206.svg)](https://doi.org/10.5281/zenodo.14349206). The training scripts can be found in [ChatTS-Training](https://github.com/xiezhe-24/ChatTS-Training).
+A fine-tuned `ChatTS` model have been open-sourced at [here](https://cloud.tsinghua.edu.cn/d/c23644020adc4d0fbc0a/). At this time, you may need to download the files one by one. You can download and try it!
 
 ## How To Use
 ### Installation
@@ -53,6 +53,9 @@ deepspeed --num_gpus [YOUR_NUM_GPUS] --master_port 12345 chatts/inference_tsmllm
 - Run `python3 -m evaluation.evaluate_tsmllm_models` to evaluate `ChatTS` (make sure you have done the model inference before).
 - We also provide a simple demo to evaluate the performance of text-based GPT models. After setting your `API_KEY` and `OPENAI_URL` in `evaluation/evaluate_gpt_text_models.py`, run the command `python3 -m evaluation.evaluate_gpt_text_models` to obtain the evaluation results of the text-based GPT model.
 
+### Fine-Tuning Your Own Model
+- We provide a simple script for fine-tuning your own TS-MLLM models: https://github.com/xiezhe-24/ChatTS-Training (modified based on [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory)). Refer to this repository for more details.
+
 ## Evaluation Datasets
 - We've provided the two evaluation datasets we gathered, as stated in the paper. You can find them in the `evaluation/dataset` folder. Each sample in these datasets has several parts: `timeseries`, which is the time series data itself; `question`, the query related to the time series; `answer`, the text-form standard answers provided for your reference only; `attributes`, the structured labels used to evaluate results; and `ability_types`, which indicates the types of tasks the question involves.
 **Please pay special attention to this**: To cut down on evaluation costs, we've combined different questions that pertain to the same time series into one `question`. We use numbering to tell these different questions apart. So, when you look at the evaluation dataset, the actual count of questions might be more than the number of `timeseries` entries. Another thing to note is that some tasks in inductive reasoning and alignment are grouped together in one question. This is because inductive reasoning tasks often require explaining the physical meanings of time series attributes. 
@@ -64,9 +67,7 @@ In `ChatTS`, we mainly focus on **Understanding and Reasoning** about time serie
 You can try more application scenarios of ChatTS by modifying the time series and the text of questions in `demo.ipynb`! 
 
 ## Notes
-- We are preparing the code for training TS-MLLM models and they will be released soon.
 - You can use the CPU for inference. However, since our current ChatTS model does not implement `kv_cache` (which we plan to implement shortly), the inference speed may be significantly slow.
-- The code, data, and models in this repository are for review purposes only. Due to company policy, the open-source code is currently under review. Once the review is approved, we will release it on GitHub and the HuggingFace platform for public access.
 
 ## Reference
 - QWen (https://github.com/QwenLM/Qwen2.5)
@@ -76,7 +77,6 @@ You can try more application scenarios of ChatTS by modifying the time series an
 - Flash Attention (https://github.com/Dao-AILab/flash-attention)
 
 ## Security
-
 If you discover a potential security issue in this project, or think you may
 have discovered a security issue, we ask that you notify Bytedance Security via our [security center](https://security.bytedance.com/src) or [vulnerability reporting email](sec@bytedance.com).
 
