@@ -175,12 +175,13 @@ def generate_dataset():
             cur_qa_list = parse_llm_json(llm_answers[i])
             for j, qa in enumerate(cur_qa_list):
                 dataset.append({
-                    'instruction': result[i]['instruction'],
-                    'input': qa['question'],
+                    'input': result[i]['instruction'] + qa['question'],
                     'output': qa['answer'],
                     'timeseries': timeseries_to_list(result[i]['timeseries'])
                 })
                 labels.append({
+                    'instruction': result[i]['instruction'],
+                    'question': qa['question'],
                     'fields': result[i]['fields'],
                     'ts_idx': result[i]['ts_idx'],
                     'metrics': result[i]['metrics'],

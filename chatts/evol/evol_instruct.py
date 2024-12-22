@@ -280,10 +280,10 @@ def evol_instruct():
         for data, label in zip(qa_dataset, labels):
             input_list.append(EvolPrompt(
                 ts_idx=label['ts_idx'],
-                seed_q=data['input'],
+                seed_q=label['question'],
                 seed_a=data['output'],
                 seed_fields=label['fields'],
-                instruction=data['instruction'],
+                instruction=label['instruction'],
                 timeseries=np.array(data['timeseries']),
                 attribute_pool=label['attribute_pool'],
                 corr_pool=label['corr_pool'],

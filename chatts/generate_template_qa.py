@@ -301,11 +301,12 @@ def generate_seed_qa_dataset():
                     'metrics': item['metrics'],
                     'corr_pool': item['corr_pool'],
                     'attribute_pool': item['attribute_pool'],
+                    'instruction': item['instruction'],
+                    'question': item['question'],
                     'ts_idx': ts_idx
                 }
                 cur_data = {
-                    'instruction': item['instruction'],
-                    'input': item['question'],
+                    'input': item['instruction'] + item['question'],
                     'output': item['answer'],
                     'timeseries': timeseries_to_list(item['timeseries'])
                 }

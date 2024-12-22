@@ -39,6 +39,7 @@ A fine-tuned `ChatTS` model have been open-sourced at [here](https://cloud.tsing
 ### Try the ChatTS Model
 - Following the steps in `Installation` to download the trained `ChatTS` model and place it under `ckpt`. 
 - The ChatTS model can be loaded directly using the `transformers` library. However, due to the time series data as input, the API usage differs from the standard implementation. **Refer to `demo.ipynb` for more information.**
+- **About `sp` Encoding.** To facilitate the input of variable-length batch time series, we adopted a method named `sp` encoding when encoding the time series. For each time series data point, an additional numerical value of 1.0 is added as a mask. For convenience, we have provided a series of functions to normalize and convert the time series and text (Value-Preserved Time Series Encoding). Please refer to `demo.ipynb` for more information about their usage. 
 
 ### Deepspeed Model Inference for Evaluation
 - We provide a simple script for inference of ChatTS (`chatts/inference_tsmllm_deepspeed.py`) with `deepspeed`. After installing `deepspeed`, please set the `WORKDIR` (the absolute path of the current directory) and the evaluation dataset in the script. Then, run the following command to do the model inference:
