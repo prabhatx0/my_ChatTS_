@@ -19,13 +19,13 @@ This repository provides several toolkits for generating synthetic data with the
 - Training scripts for training your own model.
 
 We also provide the evaluation datasets collected by us. You can download the evaluation datasets from [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14349206.svg)](https://doi.org/10.5281/zenodo.14349206). The training scripts can be found in [ChatTS-Training](https://github.com/xiezhe-24/ChatTS-Training).
-A fine-tuned `ChatTS` model have been open-sourced at [here](https://cloud.tsinghua.edu.cn/d/c23644020adc4d0fbc0a/). At this time, you may need to download the files one by one. You can download and try it!
+A fine-tuned `ChatTS` model have been open-sourced at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B). You can download and try it!
 
 ## How To Use
 ### Installation
 - Basic requirements for model inference: `python>=3.11`, `deepspeed`, `vllm`, `flash-attn` (refer to `requirements.txt`).
-- Download the evaluation datasets from [here](https://doi.org/10.5281/zenodo.14349206) and put them under `evaluation/dataset` (`evaluation/dataset/dataset_a.json` and `evaluation/dataset/dataset_b.json`).
-- Download the trained model weights from [here](https://cloud.tsinghua.edu.cn/d/c23644020adc4d0fbc0a/), extract it and put all the extracted files under `ckpt/` (`ckpt/config.json`, etc).
+- Download the evaluation datasets from [Zenodo](https://doi.org/10.5281/zenodo.14349206) and put them under `evaluation/dataset` (`evaluation/dataset/dataset_a.json` and `evaluation/dataset/dataset_b.json`).
+- Download the trained model weights from [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B), extract it and put all the extracted files under `ckpt/` (`ckpt/config.json`, etc).
 - **Note:** `ChatTS` is trained based on a 14B-sized base model, so you need to ensure that you have a GPU with sufficient memory for inference. Additionally, due to the model's requirements, `Flash-Attention` (https://github.com/Dao-AILab/flash-attention) is essential, so you need to ensure that your GPU meets the installation requirements for Flash-Attention. Recommended GPUs: A100/A800.
 
 ### Training Data Generation
