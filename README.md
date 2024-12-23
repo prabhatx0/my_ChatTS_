@@ -69,7 +69,7 @@ You can try more application scenarios of ChatTS by modifying the time series an
 ## Notes
 - You can use the CPU for inference. However, since our current ChatTS model does not implement `kv_cache` (which we plan to implement shortly), the inference speed may be significantly slow.
 
-## Reference
+## Third-Party Dependencies
 - QWen (https://github.com/QwenLM/Qwen2.5)
 - DeepSpeed (https://www.deepspeed.ai/)
 - RAGAS (https://github.com/explodinggradients/ragas)
