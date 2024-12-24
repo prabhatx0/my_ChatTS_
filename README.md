@@ -2,8 +2,6 @@
 `ChatTS` focuses on **Understanding and Reasoning** about time series, much like what vision/video/audio-MLLMs do.
 This repo provides code, datasets and model for `ChatTS`: [ChatTS: Aligning Time Series with LLMs via Synthetic Data for Enhanced Understanding and Reasoning](https://arxiv.org/pdf/2412.03104).
 
-Repo URL: https://github.com/bytedance/ChatTS
-
 Here is an example of a ChatTS application, which allows users to interact with a LLM to understand and reason about time series data:
 ![Chat](figures/chat_example.png)
 
