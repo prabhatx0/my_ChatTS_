@@ -48,6 +48,7 @@ prompt = f"I have a time series length of 256: <ts><ts/>. Please analyze the loc
 prompt, timeseries = eval_prompt_to_encoding(prompt, [timeseries], 'sp')
 
 # Tokenize and convert to tensor
+prompt = f"<|im_start|>system\nYou are a helpful assistant.<|im_end|><|im_start|>user\n{prompt}<|im_end|><|im_start|>assistant\n"
 inputs = tokenizer([prompt], return_tensors="pt", padding=True, truncation=True).to(device=0)
 timeseries = torch.tensor(timeseries, dtype=torch.float16, device=0)
 
