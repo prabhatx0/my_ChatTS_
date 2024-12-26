@@ -34,22 +34,26 @@ A fine-tuned `ChatTS` model have been open-sourced at [HuggingFace](https://hugg
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
+import numpy as np
 from chatts.encoding_utils import eval_prompt_to_encoding
 
 # Load the model
-model = AutoModelForCausalLM.from_pretrained("./ckpt", trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained("./ckpt", trust_remote_code=True, device_map=0, torch_dtype='float16')
+tokenizer = AutoTokenizer.from_pretrained("./ckpt", trust_remote_code=True)
 
 # Create time series and prompts
 timeseries = np.sin(np.arange(256) / 10) * 5.0
-ts1[100:] -= 10.0
+timeseries[100:] -= 10.0
 prompt = f"I have a time series length of 256: <ts><ts/>. Please analyze the local changes in this time series."
+prompt, timeseries = eval_prompt_to_encoding(prompt, [timeseries], 'sp')
 
 # Tokenize and convert to tensor
 inputs = tokenizer([prompt], return_tensors="pt", padding=True, truncation=True).to(device=0)
 timeseries = torch.tensor(timeseries, dtype=torch.float16, device=0)
 
 # Model Generate
-outputs = model.generate(**inputs, timeseries=timeseries max_new_tokens=300)
+outputs = model.generate(**inputs, timeseries=timeseries, max_new_tokens=300)
+print(tokenizer.decode(outputs[0][len(inputs['input_ids'][0]):], skip_special_tokens=True))
 ```
 
 ### Training Data Generation
