@@ -26,6 +26,32 @@ A fine-tuned `ChatTS` model have been open-sourced at [HuggingFace](https://hugg
 - Download the trained model weights from [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B), extract it and put all the extracted files under `ckpt/` (`ckpt/config.json`, etc).
 - **Note:** `ChatTS` is trained based on a 14B-sized base model, so you need to ensure that you have a GPU with sufficient memory for inference. Additionally, due to the model's requirements, `Flash-Attention` (https://github.com/Dao-AILab/flash-attention) is essential, so you need to ensure that your GPU meets the installation requirements for Flash-Attention. Recommended GPUs: A100/A800.
 
+### Try the ChatTS Model
+- Following the steps in `Installation` to download the trained `ChatTS` model and place it under `ckpt`. 
+- The ChatTS model can be loaded directly using the `transformers` library. However, due to the time series data as input, the API usage differs from the standard implementation. **Refer to `demo.ipynb` for more information.**
+- **About `sp` Encoding.** To facilitate the input of variable-length batch time series, we adopted a method named `sp` encoding when encoding the time series. For each time series data point, an additional numerical value of 1.0 is added as a mask. For convenience, we have provided a series of functions to normalize and convert the time series and text (Value-Preserved Time Series Encoding). Please refer to `demo.ipynb` for more information about their usage. 
+- An example usage of ChatTS:
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+from chatts.encoding_utils import eval_prompt_to_encoding
+
+# Load the model
+model = AutoModelForCausalLM.from_pretrained("./ckpt", trust_remote_code=True)
+
+# Create time series and prompts
+timeseries = np.sin(np.arange(256) / 10) * 5.0
+ts1[100:] -= 10.0
+prompt = f"I have a time series length of 256: <ts><ts/>. Please analyze the local changes in this time series."
+
+# Tokenize and convert to tensor
+inputs = tokenizer([prompt], return_tensors="pt", padding=True, truncation=True).to(device=0)
+timeseries = torch.tensor(timeseries, dtype=torch.float16, device=0)
+
+# Model Generate
+outputs = model.generate(**inputs, timeseries=timeseries max_new_tokens=300)
+```
+
 ### Training Data Generation
 1. **QA Generation with Templates**. Use `python3 -m chatts.generate_template_qa` to generate a training dataset with pre-defined templates.
 2. **QA Generation with LLMs**. You need a downloaded LLM that can be loaded with `vLLM` to perform this step. Set `[LOCAL_LLM_PATH]` in `chatts/generate_llm_qa.py` to a local LLM model (e.g., QWen2.5-32B-Instruct, **NOT ChatTS Model**) and set num_gpus, gpu_per_model accordingly. Use `python3 -m chatts.generate_llm_qa` to generate a training dataset with LLMs.
@@ -34,16 +60,12 @@ A fine-tuned `ChatTS` model have been open-sourced at [HuggingFace](https://hugg
     2. Run `python3 -m chatts.evol.evol_instruct`.
     3. The output will be saved to the file specified in `OUTPUT_FILE`.
 
-### Try the ChatTS Model
-- Following the steps in `Installation` to download the trained `ChatTS` model and place it under `ckpt`. 
-- The ChatTS model can be loaded directly using the `transformers` library. However, due to the time series data as input, the API usage differs from the standard implementation. **Refer to `demo.ipynb` for more information.**
-- **About `sp` Encoding.** To facilitate the input of variable-length batch time series, we adopted a method named `sp` encoding when encoding the time series. For each time series data point, an additional numerical value of 1.0 is added as a mask. For convenience, we have provided a series of functions to normalize and convert the time series and text (Value-Preserved Time Series Encoding). Please refer to `demo.ipynb` for more information about their usage. 
-
 ### Deepspeed Model Inference for Evaluation
 - We provide a simple script for inference of ChatTS (`chatts/inference_tsmllm_deepspeed.py`) with `deepspeed`. After installing `deepspeed`, please set the `WORKDIR` (the absolute path of the current directory) and the evaluation dataset in the script. Then, run the following command to do the model inference:
 ```sh
 deepspeed --num_gpus [YOUR_NUM_GPUS] --master_port 12345 chatts/inference_tsmllm_deepspeed.py
 ```
+You should find the inference results under `exp/` folder, which will be further used for evaluation.
 
 ### Evaluation
 - Install `ragas==0.1.9` (https://github.com/explodinggradients/ragas), which is used for evaluating the inductive reasoning results.
@@ -66,6 +88,7 @@ You can try more application scenarios of ChatTS by modifying the time series an
 
 ## Notes
 - You can use the CPU for inference. However, since our current ChatTS model does not implement `kv_cache` (which we plan to implement shortly), the inference speed may be significantly slow.
+- `vLLM` inference is not supported currently. You can use `deepspeed` for inference for now.
 
 ## Third-Party Dependencies
 - QWen (https://github.com/QwenLM/Qwen2.5)
