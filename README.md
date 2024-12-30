@@ -5,6 +5,9 @@ This repo provides code, datasets and model for `ChatTS`: [ChatTS: Aligning Time
 Here is an example of a ChatTS application, which allows users to interact with a LLM to understand and reason about time series data:
 ![Chat](figures/chat_example.png)
 
+We also provide the evaluation datasets collected by us. You can download the evaluation datasets from [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14349206.svg)](https://doi.org/10.5281/zenodo.14349206). The training scripts can be found in [ChatTS-Training](https://github.com/xiezhe-24/ChatTS-Training).
+A fine-tuned `ChatTS` model have been open-sourced at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B). You can download and try it!
+
 ## News
 - **2024/12/30**: A beta version of `vLLM` support for ChatTS is available! Check [demo_vllm.py](demo_vllm.py) for more information. (**Note**: This version is still under development and may not be stable.) We have also updated the ChatTS model implementation, which supports `kv_cache` and `AutoProcessor` now. You can find them at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B).
 
@@ -19,9 +22,6 @@ This repository provides several toolkits for generating synthetic data with the
 - A trained `ChatTS` model at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B).
 - Evaluations datasets: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14349206.svg)](https://doi.org/10.5281/zenodo.14349206).
 - Training scripts for training your own model: [ChatTS-Training](https://github.com/xiezhe-24/ChatTS-Training).
-
-We also provide the evaluation datasets collected by us. You can download the evaluation datasets from [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14349206.svg)](https://doi.org/10.5281/zenodo.14349206). The training scripts can be found in [ChatTS-Training](https://github.com/xiezhe-24/ChatTS-Training).
-A fine-tuned `ChatTS` model have been open-sourced at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B). You can download and try it!
 
 ## How To Use
 ### Installation
