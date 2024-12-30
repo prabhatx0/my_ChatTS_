@@ -5,6 +5,9 @@ This repo provides code, datasets and model for `ChatTS`: [ChatTS: Aligning Time
 Here is an example of a ChatTS application, which allows users to interact with a LLM to understand and reason about time series data:
 ![Chat](figures/chat_example.png)
 
+## News
+- **2024/12/30**: A beta version of `vLLM` support for ChatTS is available! Check [demo_vllm.py](demo_vllm.py) for more information. (**Note**: This version is still under development and may not be stable.) We have also updated the ChatTS model implementation, which supports `kv_cache` and `AutoProcessor` now. You can find them at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B).
+
 ## Introduction
 This repository provides several toolkits for generating synthetic data with the approaches introduced in `ChatTS`, as well as the evaluation code and evaluation datasets for reproduction:
 - Toolkits for generating synthetic time series data and the corresponding attribues: `chatts/ts_generator.py`.
@@ -12,49 +15,68 @@ This repository provides several toolkits for generating synthetic data with the
 - Example code for generating a training dataset with LLMs: `chatts/generate_llm_qa`, which can be further used as seed QAs for TSEvol.
 - Code implementation for `TSEvol` with the generated seed QAs: `chatts/evol/evol_instruct.py`.
 - Code implementation for evaluation: `evaluation/`.
-- A trained `ChatTS` model and evaluations datasets (Refer to the section below for more details).
-- A simple demo for inference: `demo.ipynb`.
-- Training scripts for training your own model.
+- Simple demos for inference: `demo_hf.ipynb` and `demo_vllm.py`.
+- A trained `ChatTS` model at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B).
+- Evaluations datasets: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14349206.svg)](https://doi.org/10.5281/zenodo.14349206).
+- Training scripts for training your own model: [ChatTS-Training](https://github.com/xiezhe-24/ChatTS-Training).
 
 We also provide the evaluation datasets collected by us. You can download the evaluation datasets from [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14349206.svg)](https://doi.org/10.5281/zenodo.14349206). The training scripts can be found in [ChatTS-Training](https://github.com/xiezhe-24/ChatTS-Training).
 A fine-tuned `ChatTS` model have been open-sourced at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B). You can download and try it!
 
 ## How To Use
 ### Installation
-- Basic requirements for model inference: `python>=3.11`, `deepspeed`, `vllm`, `flash-attn` (refer to `requirements.txt`).
+- Basic requirements for model inference: `python>=3.11`, `deepspeed`, `vllm==0.6.6.post1`, `torch==2.5.1`, `flash-attn` (refer to `requirements.txt`).
 - Download the evaluation datasets from [Zenodo](https://doi.org/10.5281/zenodo.14349206) and put them under `evaluation/dataset` (`evaluation/dataset/dataset_a.json` and `evaluation/dataset/dataset_b.json`).
 - Download the trained model weights from [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B), extract it and put all the extracted files under `ckpt/` (`ckpt/config.json`, etc).
 - **Note:** `ChatTS` is trained based on a 14B-sized base model, so you need to ensure that you have a GPU with sufficient memory for inference. Additionally, due to the model's requirements, `Flash-Attention` (https://github.com/Dao-AILab/flash-attention) is essential, so you need to ensure that your GPU meets the installation requirements for Flash-Attention. Recommended GPUs: A100/A800.
 
 ### Try the ChatTS Model
 - Following the steps in `Installation` to download the trained `ChatTS` model and place it under `ckpt`. 
-- The ChatTS model can be loaded directly using the `transformers` library. However, due to the time series data as input, the API usage differs from the standard implementation. **Refer to `demo.ipynb` for more information.**
-- **About `sp` Encoding.** To facilitate the input of variable-length batch time series, we adopted a method named `sp` encoding when encoding the time series. For each time series data point, an additional numerical value of 1.0 is added as a mask. For convenience, we have provided a series of functions to normalize and convert the time series and text (Value-Preserved Time Series Encoding). Please refer to `demo.ipynb` for more information about their usage. 
-- An example usage of ChatTS:
+- The ChatTS model can be loaded directly using the `transformers` library. **Refer to `demo_hf.ipynb` for more information.**
+- **About `sp` Encoding.** To facilitate the input of variable-length batch time series, we adopted a method named `sp` encoding when encoding the time series. For each time series data point, an additional numerical value of 1.0 is added as a mask. For convenience, we have a Processor which can be loaded with `AutoProcessor` in `transformers` to normalize and convert the time series and text (Value-Preserved Time Series Encoding). Please refer to `demo_hf.ipynb` for more information about their usage. 
+- An example usage of ChatTS (with `HuggingFace`):
 ```python
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoProcessor
 import torch
 import numpy as np
-from chatts.encoding_utils import eval_prompt_to_encoding
 
-# Load the model
+# Load the model, tokenizer and processor
 model = AutoModelForCausalLM.from_pretrained("./ckpt", trust_remote_code=True, device_map=0, torch_dtype='float16')
 tokenizer = AutoTokenizer.from_pretrained("./ckpt", trust_remote_code=True)
-
+processor = AutoProcessor.from_pretrained("./ckpt", trust_remote_code=True, tokenizer=tokenizer)
 # Create time series and prompts
 timeseries = np.sin(np.arange(256) / 10) * 5.0
 timeseries[100:] -= 10.0
 prompt = f"I have a time series length of 256: <ts><ts/>. Please analyze the local changes in this time series."
-prompt, timeseries = eval_prompt_to_encoding(prompt, [timeseries], 'sp')
-
-# Tokenize and convert to tensor
+# Apply Chat Template
 prompt = f"<|im_start|>system\nYou are a helpful assistant.<|im_end|><|im_start|>user\n{prompt}<|im_end|><|im_start|>assistant\n"
-inputs = tokenizer([prompt], return_tensors="pt", padding=True, truncation=True).to(device=0)
-timeseries = torch.tensor(timeseries, dtype=torch.float16, device=0)
-
+# Convert to tensor
+inputs = processor(text=[prompt], timeseries=[timeseries], padding=True, return_tensors="pt")
 # Model Generate
-outputs = model.generate(**inputs, timeseries=timeseries, max_new_tokens=300)
+outputs = model.generate(**inputs, max_new_tokens=300)
 print(tokenizer.decode(outputs[0][len(inputs['input_ids'][0]):], skip_special_tokens=True))
+```
+
+## vLLM Inference (Beta)
+Since [vLLM](https://github.com/vllm-project/vllm) lacks native support for the `ChatTS` model, we have provided a [patch](chatts/vllm/chatts_vllm.py) to enable vLLM to support inference. Therefore, before using vLLM to load the model, please make sure that the code includes: `import chatts.vllm.chatts_vllm` to register the ChatTS model in vLLM. Please refer to the following steps to use vLLM to load ChatTS:
+
+1. Install `vllm==0.6.6.post1` (please ensure that you have installed the exact version as vLLM's multimodal APIs change frequently).
+2. Please refer to `demo_vllm.py` for detailed usage methods.
+
+A simple example of using vLLM to load ChatTS: 
+```python
+import chatts.vllm.chatts_vllm
+from vllm import LLM, SamplingParams
+# Load the model
+language_model = LLM(model="./ckpt", trust_remote_code=True, max_model_len=ctx_length, tensor_parallel_size=1, gpu_memory_utilization=0.95, limit_mm_per_prompt={"timeseries": 50})
+# Create time series (np.ndarray) and prompts (chat_templated applied)
+ts1, ts2 = ...
+prompt = ...
+# Model Inference
+outputs = language_model.generate([{
+      "prompt": prompt,
+      "multi_modal_data": {"timeseries": [ts1, ts2]}
+  }], sampling_params=SamplingParams(max_tokens=300))
 ```
 
 ### Training Data Generation
@@ -89,17 +111,13 @@ You should find the inference results under `exp/` folder, which will be further
 ## Case Studies
 ![image](figures/case_studies.png)
 In `ChatTS`, we mainly focus on **Understanding and Reasoning** about time series, just like what vision/video/audio-MLLMs do, rather than conducting time series prediction, anomaly detection and classification tasks.
-You can try more application scenarios of ChatTS by modifying the time series and the text of questions in `demo.ipynb`! 
-
-## Notes
-- You can use the CPU for inference. However, since our current ChatTS model does not implement `kv_cache` (which we plan to implement shortly), the inference speed may be significantly slow.
-- `vLLM` inference is not supported currently. You can use `deepspeed` for inference for now.
+You can try more application scenarios of ChatTS by modifying the time series and the text of questions in `demo_hf.ipynb`! 
 
 ## Third-Party Dependencies
 - QWen (https://github.com/QwenLM/Qwen2.5)
 - DeepSpeed (https://www.deepspeed.ai/)
 - RAGAS (https://github.com/explodinggradients/ragas)
-- VLLM (https://github.com/vllm-project/vllm)
+- vLLM (https://github.com/vllm-project/vllm)
 - Flash Attention (https://github.com/Dao-AILab/flash-attention)
 
 ## Security
