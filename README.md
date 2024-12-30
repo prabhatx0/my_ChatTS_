@@ -57,7 +57,7 @@ outputs = model.generate(**inputs, max_new_tokens=300)
 print(tokenizer.decode(outputs[0][len(inputs['input_ids'][0]):], skip_special_tokens=True))
 ```
 
-## vLLM Inference (Beta)
+### vLLM Inference (Beta)
 Since [vLLM](https://github.com/vllm-project/vllm) lacks native support for the `ChatTS` model, we have provided a [patch](chatts/vllm/chatts_vllm.py) to enable vLLM to support inference. Therefore, before using vLLM to load the model, please make sure that the code includes: `import chatts.vllm.chatts_vllm` to register the ChatTS model in vLLM. Please refer to the following steps to use vLLM to load ChatTS:
 
 1. Install `vllm==0.6.6.post1` (please ensure that you have installed the exact version as vLLM's multimodal APIs change frequently).
