@@ -1,15 +1,24 @@
 # ChatTS: Understanding, Chat, Reasoning about Time Series with TS-MLLM
-`ChatTS` focuses on **Understanding and Reasoning** about time series, much like what vision/video/audio-MLLMs do.
+
+[![huggingface](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-FFD21E)](https://huggingface.co/bytedance-research/ChatTS-14B)
+[![DOI](https://zenodo.org/badge/DOI/Datasets.svg)](https://doi.org/10.5281/zenodo.14349206)
+[![preprint](https://img.shields.io/static/v1?label=arXiv&message=2412.03104&color=B31B1B&logo=arXiv)](https://arxiv.org/abs/2412.03104)
+![Visits Badge](https://badges.pufler.dev/visits/NetManAIOps/ChatTS)
+![Stars](https://img.shields.io/github/stars/NetManAIOps/ChatTS)
+![Forks](https://img.shields.io/github/forks/NetManAIOps/ChatTS)
+
+`ChatTS` is a Time Series Multimodal LLM focuses on **Understanding and Reasoning** about time series, much like what vision/video/audio-MLLMs do.
 This repo provides code, datasets and model for `ChatTS`: [ChatTS: Aligning Time Series with LLMs via Synthetic Data for Enhanced Understanding and Reasoning](https://arxiv.org/pdf/2412.03104).
 
 Here is an example of a ChatTS application, which allows users to interact with a LLM to understand and reason about time series data:
 ![Chat](figures/chat_example.png)
 
 We also provide the evaluation datasets collected by us. You can download the evaluation datasets from [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14349206.svg)](https://doi.org/10.5281/zenodo.14349206). The training scripts can be found in [ChatTS-Training](https://github.com/xiezhe-24/ChatTS-Training).
-A fine-tuned `ChatTS` model have been open-sourced at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B). You can download and try it!
+A fine-tuned `ChatTS` model (based on a modified version of QWen2.5-14B-Instruct) have been open-sourced at [![huggingface](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-FFD21E)](https://huggingface.co/bytedance-research/ChatTS-14B). You can download and try it!
 
 ## News
-- **2024/12/30**: A beta version of `vLLM` support for ChatTS is available! Check [demo_vllm.py](demo_vllm.py) for more information. (**Note**: This version is still under development and may not be stable.) We have also updated the ChatTS model implementation, which supports `kv_cache` and `AutoProcessor` now. You can find them at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B).
+- **2025/01/01**: We have released a new version of `ChatTS` model, with enhanced CoT and questiona answering capability. Check [![huggingface](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-FFD21E)](https://huggingface.co/bytedance-research/ChatTS-14B) for more information.
+- **2024/12/30**: A experimental version of `vLLM` support for ChatTS is available! Check [demo_vllm.py](demo_vllm.py) for more information. (**Note**: This version is still under development and may not be stable.) We have also updated the ChatTS model implementation, which supports `kv_cache` and `AutoProcessor` now. You can find them at [![huggingface](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-FFD21E)](https://huggingface.co/bytedance-research/ChatTS-14B).
 
 ## Introduction
 This repository provides several toolkits for generating synthetic data with the approaches introduced in `ChatTS`, as well as the evaluation code and evaluation datasets for reproduction:
@@ -19,7 +28,7 @@ This repository provides several toolkits for generating synthetic data with the
 - Code implementation for `TSEvol` with the generated seed QAs: `chatts/evol/evol_instruct.py`.
 - Code implementation for evaluation: `evaluation/`.
 - Simple demos for inference: `demo_hf.ipynb` and `demo_vllm.py`.
-- A trained `ChatTS` model at [HuggingFace](https://huggingface.co/bytedance-research/ChatTS-14B).
+- A trained `ChatTS` model (fine-tuned based on a modified version of QWen2.5-14B-Instruct) at [![huggingface](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-FFD21E)](https://huggingface.co/bytedance-research/ChatTS-14B).
 - Evaluations datasets: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14349206.svg)](https://doi.org/10.5281/zenodo.14349206).
 - Training scripts for training your own model: [ChatTS-Training](https://github.com/xiezhe-24/ChatTS-Training).
 
@@ -57,7 +66,7 @@ outputs = model.generate(**inputs, max_new_tokens=300)
 print(tokenizer.decode(outputs[0][len(inputs['input_ids'][0]):], skip_special_tokens=True))
 ```
 
-### vLLM Inference (Beta)
+### vLLM Inference (Experimental)
 Since [vLLM](https://github.com/vllm-project/vllm) lacks native support for the `ChatTS` model, we have provided a [patch](chatts/vllm/chatts_vllm.py) to enable vLLM to support inference. Therefore, before using vLLM to load the model, please make sure that the code includes: `import chatts.vllm.chatts_vllm` to register the ChatTS model in vLLM. Please refer to the following steps to use vLLM to load ChatTS:
 
 1. Install `vllm==0.6.6.post1` (please ensure that you have installed the exact version as vLLM's multimodal APIs change frequently).
