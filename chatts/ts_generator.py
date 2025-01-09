@@ -338,7 +338,7 @@ def generate_seasonal(attribute_pool, overall_amplitude, seq_len):
                 # Only one period of seasonal amplitudes
                 amp = [attribute_pool['seasonal']['amplitude']]
                 split_points = [0, seq_len]
-            y += generate_seasonal_wave(seq_len, amp, split_points, seq_len, wave_type)
+            y += generate_seasonal_wave(attribute_pool['frequency']['period'], amp, split_points, seq_len, wave_type)
 
             attribute_pool["seasonal"]['detail'] = f"The time series is showing {attribute_pool['seasonal']['type']}: "
             attribute_pool["seasonal"]["segments"] = []
